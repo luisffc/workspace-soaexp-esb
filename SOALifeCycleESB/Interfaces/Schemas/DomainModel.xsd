@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.soaexpert.com.br/domain" xmlns:tns="http://www.soaexpert.com.br/domain" elementFormDefault="qualified">
+
+    <complexType name="Empresa">
+    	<sequence>
+    		<element name="id" type="int"/>
+    		<element name="razaosocial" type="string"/>
+    		<element name="nomeFantasia" type="string"/>
+    		<element name="cnpj" type="string"/>
+    		<element name="telefone" type="int"/>
+    		<element name="notaFiscal" type="tns:NotaFiscal" minOccurs="0" maxOccurs="unbounded"/>
+    	</sequence>
+    </complexType>
+
+    <complexType name="NotaFiscal">
+    	<sequence>
+    		<element name="id" type="int"/>
+    		<element name="descricao" type="string"/>
+    		<element name="empresa" type="tns:Empresa"/>
+    		<element name="valor" type="double"/>
+    	</sequence>
+    </complexType>
+
+    <complexType name="Credito">
+    	<sequence>
+    		<element name="empresa" type="tns:Empresa"/>
+    		<element name="serasa" type="boolean"/>
+    		<element name="spc" type="boolean"/>
+    		<element name="casasBahia" type="boolean"/>
+    		<element name="aprovado" type="boolean"/>
+    	</sequence>
+    </complexType>
+
+    <complexType name="NewComplexType">
+    	<sequence>
+    		<element name="id" type="int"/>
+    		<element name="empresas" type="tns:Empresa" minOccurs="1" maxOccurs="unbounded"/>
+    	</sequence>
+    </complexType>
+    
+</schema>
