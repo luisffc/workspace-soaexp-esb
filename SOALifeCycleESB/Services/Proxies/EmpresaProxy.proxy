@@ -88,6 +88,129 @@
             </con1:requestTransform>
             <con1:responseTransform/>
           </con1:wsCallout>
+          <con1:ifThenElse>
+            <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7fdf</con2:id>
+            <con1:case>
+              <con1:condition>
+                <con2:xqueryText>$serasaResponse/credito/dom:serasa/text() = "true"</con2:xqueryText>
+              </con1:condition>
+              <con1:actions>
+                <con1:assign varName="credito">
+                  <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7fb4</con2:id>
+                  <con1:expr>
+                    <con2:xqueryText>fn:sum(xs:int($credito) + 1)</con2:xqueryText>
+                  </con1:expr>
+                </con1:assign>
+              </con1:actions>
+            </con1:case>
+            <con1:default/>
+          </con1:ifThenElse>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Verifica SPC">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con1:wsCallout>
+            <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7f53</con2:id>
+            <con1:service xsi:type="ref:BusinessServiceRef" ref="SOALifeCycleESB/Services/Business/CreditoService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con1:operation>verificaCreditoSPC</con1:operation>
+            <con1:request>
+              <con1:body>$spcRequest</con1:body>
+            </con1:request>
+            <con1:response>
+              <con1:body>spcResponse</con1:body>
+            </con1:response>
+            <con1:requestTransform>
+              <con1:assign varName="spcRequest">
+                <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7f39</con2:id>
+                <con1:expr>
+                  <con2:xqueryText><![CDATA[<cred:verificaCreditoSPC xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/emp:verificaCadastro/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/emp:verificaCadastro/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/emp:verificaCadastro/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/emp:verificaCadastro/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/emp:verificaCadastro/empresa/dom:telefone/text()}</dom:telefone>
+    </empresa>
+</cred:verificaCreditoSPC>]]></con2:xqueryText>
+                </con1:expr>
+              </con1:assign>
+            </con1:requestTransform>
+            <con1:responseTransform/>
+          </con1:wsCallout>
+          <con1:ifThenElse>
+            <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7ef8</con2:id>
+            <con1:case>
+              <con1:condition>
+                <con2:xqueryText>$spcResponse/credito/dom:spc/text() = "true"</con2:xqueryText>
+              </con1:condition>
+              <con1:actions>
+                <con1:assign varName="credito">
+                  <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7ef7</con2:id>
+                  <con1:expr>
+                    <con2:xqueryText>fn:sum(xs:int($credito) + 1)</con2:xqueryText>
+                  </con1:expr>
+                </con1:assign>
+              </con1:actions>
+            </con1:case>
+            <con1:default/>
+          </con1:ifThenElse>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Verifica Casas Bahia">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con1:wsCallout>
+            <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7ee5</con2:id>
+            <con1:service xsi:type="ref:BusinessServiceRef" ref="SOALifeCycleESB/Services/Business/CreditoService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con1:operation>verificaCasasBahia</con1:operation>
+            <con1:request>
+              <con1:body>$bahiaRequest</con1:body>
+            </con1:request>
+            <con1:response>
+              <con1:body>bahiaResponse</con1:body>
+            </con1:response>
+            <con1:requestTransform>
+              <con1:assign varName="bahiaRequest">
+                <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7e8a</con2:id>
+                <con1:expr>
+                  <con2:xqueryText><![CDATA[<cred:verificaCasasBahia xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/emp:verificaCadastro/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/emp:verificaCadastro/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/emp:verificaCadastro/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/emp:verificaCadastro/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/emp:verificaCadastro/empresa/dom:telefone/text()}</dom:telefone>
+    </empresa>
+</cred:verificaCasasBahia>]]></con2:xqueryText>
+                </con1:expr>
+              </con1:assign>
+            </con1:requestTransform>
+            <con1:responseTransform/>
+          </con1:wsCallout>
+          <con1:ifThenElse>
+            <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7e4c</con2:id>
+            <con1:case>
+              <con1:condition>
+                <con2:xqueryText>$bahiaResponse/credito/dom:casasBahia/text() = "true"</con2:xqueryText>
+              </con1:condition>
+              <con1:actions>
+                <con1:assign varName="credito">
+                  <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7e2d</con2:id>
+                  <con1:expr>
+                    <con2:xqueryText>fn:sum(xs:int($credito) + 1)</con2:xqueryText>
+                  </con1:expr>
+                </con1:assign>
+              </con1:actions>
+            </con1:case>
+            <con1:default/>
+          </con1:ifThenElse>
         </con:actions>
       </con:stage>
     </con:pipeline>
