@@ -2,7 +2,6 @@ package br.com.soaexpert.creditoservice;
 
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
-
 import br.com.soaexpert.domain.Credito;
 import br.com.soaexpert.domain.Empresa;
 
@@ -17,12 +16,12 @@ public class CreditoService_CreditoServiceSOAPImpl implements CreditoService {
 
 	/**
 	 * 
-	 * @param in
+	 * @param empresa
 	 * @return returns br.com.soaexpert.domain.Credito
 	 */
-	public Credito vefiricaCreditoSerasa(Empresa in) {
+	public Credito vefiricaCreditoSerasa(Empresa empresa) {
 		Credito credito = new Credito();
-		credito.setEmpresa(in);
+		credito.setEmpresa(empresa);
 		credito.setSerasa(true);
 		credito.setAprovado(false);
 		return credito;
@@ -30,12 +29,12 @@ public class CreditoService_CreditoServiceSOAPImpl implements CreditoService {
 
 	/**
 	 * 
-	 * @param in
+	 * @param empresa
 	 * @return returns br.com.soaexpert.domain.Credito
 	 */
-	public Credito verificaCreditoSPC(Empresa in) {
+	public Credito verificaCreditoSPC(Empresa empresa) {
 		Credito credito = new Credito();
-		credito.setEmpresa(in);
+		credito.setEmpresa(empresa);
 		credito.setSpc(true);
 		credito.setAprovado(false);
 		return credito;
@@ -43,12 +42,12 @@ public class CreditoService_CreditoServiceSOAPImpl implements CreditoService {
 
 	/**
 	 * 
-	 * @param in
+	 * @param empresa
 	 * @return returns br.com.soaexpert.domain.Credito
 	 */
-	public Credito verificaCasasBahia(Empresa in) {
+	public Credito verificaCasasBahia(Empresa empresa) {
 		Credito credito = new Credito();
-		credito.setEmpresa(in);
+		credito.setEmpresa(empresa);
 		credito.setCasasBahia(true);
 		credito.setAprovado(false);
 		return credito;

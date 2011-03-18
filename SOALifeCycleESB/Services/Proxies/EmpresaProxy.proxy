@@ -75,13 +75,13 @@
                 <con2:id>_ActionId-625907143929046240--51608c84.12ec0064bdc.-7fbd</con2:id>
                 <con1:expr>
                   <con2:xqueryText><![CDATA[<cred:vefiricaCreditoSerasa xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
-    <in xmlns:dom="http://www.soaexpert.com.br/domain">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
         <dom:id>{$body/emp:verificaCadastro/empresa/dom:id/text()}</dom:id>
         <dom:razaosocial>{$body/emp:verificaCadastro/empresa/dom:razaosocial/text()}</dom:razaosocial>
         <dom:nomeFantasia>{$body/emp:verificaCadastro/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
         <dom:cnpj>{$body/emp:verificaCadastro/empresa/dom:cnpj/text()}</dom:cnpj>
         <dom:telefone>{$body/emp:verificaCadastro/empresa/dom:telefone/text()}</dom:telefone>
-    </in>
+    </empresa>
 </cred:vefiricaCreditoSerasa>]]></con2:xqueryText>
                 </con1:expr>
               </con1:assign>

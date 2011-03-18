@@ -9,14 +9,14 @@
     	<xsd:element name="vefiricaCreditoSerasa">
     		<xsd:complexType>
     			<xsd:sequence>
-    				<xsd:element name="in" type="pref:Empresa"/>
+    				<xsd:element name="empresa" type="pref:Empresa"/>
     			</xsd:sequence>
     		</xsd:complexType>
     	</xsd:element>
     	<xsd:element name="vefiricaCreditoSerasaResponse">
     		<xsd:complexType>
     			<xsd:sequence>
-    				<xsd:element name="out" type="pref:Credito"/>
+    				<xsd:element name="credito" type="pref:Credito"/>
     			</xsd:sequence>
     		</xsd:complexType>
     	</xsd:element>
@@ -24,14 +24,14 @@
     	<xsd:element name="verificaCreditoSPC">
     		<xsd:complexType>
     			<xsd:sequence>
-    				<xsd:element name="in" type="pref:Empresa"/>
+    				<xsd:element name="empresa" type="pref:Empresa"/>
     			</xsd:sequence>
     		</xsd:complexType>
     	</xsd:element>
     	<xsd:element name="verificaCreditoSPCResponse">
     		<xsd:complexType>
     			<xsd:sequence>
-    				<xsd:element name="out" type="pref:Credito"/>
+    				<xsd:element name="credito" type="pref:Credito"/>
     			</xsd:sequence>
     		</xsd:complexType>
     	</xsd:element>
@@ -39,14 +39,14 @@
     	<xsd:element name="verificaCasasBahia">
     		<xsd:complexType>
     			<xsd:sequence>
-    				<xsd:element name="in" type="pref:Empresa"/>
+    				<xsd:element name="empresa" type="pref:Empresa"/>
     			</xsd:sequence>
     		</xsd:complexType>
     	</xsd:element>
     	<xsd:element name="verificaCasasBahiaResponse">
     		<xsd:complexType>
     			<xsd:sequence>
-    				<xsd:element name="out" type="pref:Credito"/>
+    				<xsd:element name="credito" type="pref:Credito"/>
     			</xsd:sequence>
     		</xsd:complexType>
     	</xsd:element>
