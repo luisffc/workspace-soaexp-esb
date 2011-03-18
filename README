@@ -1,0 +1,14 @@
+Este é um workspace do eclipse com varios projetos.
+
+Após baixar abra o eclipse da Oracle e aponte-o para este diretorio.
+
+Crie um novo projeto do tipo "Oracle Service Bus Configuration Project" chamado "OSBSOALifeCycleConf"
+
+- Importando os projetos de esb:
+Dentro de um projeto de configuracao, crie um outro projeto do tipo "Oracle Service Bus Project" com o mesmo nome do diretorio do projeto que deseja importar.
+
+- Importando os projetos de web service:
+Crie um novo projeto do tipo "Web Service Project" com o mesmo nome do diretorio do projeto que deseja importar.
+Desmarque a opção de gerar o web.xml e siga em frente.
+
+Inclua um servidor, e mande rodar os projetos!
