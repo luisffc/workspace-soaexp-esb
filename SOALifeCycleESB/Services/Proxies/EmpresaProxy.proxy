@@ -214,7 +214,70 @@
         </con:actions>
       </con:stage>
     </con:pipeline>
-    <con:pipeline type="response" name="Verifica Credito_response"/>
+    <con:pipeline type="response" name="Verifica Credito_response">
+      <con:stage name="Define Retorno">
+        <con:context/>
+        <con:actions>
+          <con1:assign varName="response">
+            <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7dff</con2:id>
+            <con1:expr>
+              <con2:xqueryText><![CDATA[<emp:verificaCreditoResponse xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
+	<dom:credito xmlns:dom="http://www.soaexpert.com.br/domain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.soaexpert.com.br/domain ../../Interfaces/Schemas/DomainModel.xsd ">
+	  <dom:empresa>
+	    <dom:id>0</dom:id>
+	    <dom:razaosocial>dom:razaosocial</dom:razaosocial>
+	    <dom:nomeFantasia>dom:nomeFantasia</dom:nomeFantasia>
+	    <dom:cnpj>dom:cnpj</dom:cnpj>
+	    <dom:telefone>0</dom:telefone>
+	  </dom:empresa>
+	  <dom:serasa>false</dom:serasa>
+	  <dom:spc>false</dom:spc>
+	  <dom:casasBahia>false</dom:casasBahia>
+	  <dom:aprovado>false</dom:aprovado>
+	</dom:credito>
+</emp:verificaCreditoResponse>]]></con2:xqueryText>
+            </con1:expr>
+          </con1:assign>
+          <con1:replace varName="body">
+            <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7d85</con2:id>
+            <con1:location>
+              <con2:xpathText>./*</con2:xpathText>
+            </con1:location>
+            <con1:expr>
+              <con2:xqueryText>$response</con2:xqueryText>
+            </con1:expr>
+          </con1:replace>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Verifica se Aprovado">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con1:ifThenElse>
+            <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7d6e</con2:id>
+            <con1:case>
+              <con1:condition>
+                <con2:xqueryText>xs:int($credito) > 2</con2:xqueryText>
+              </con1:condition>
+              <con1:actions>
+                <con1:replace varName="body" contents-only="false">
+                  <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7d4b</con2:id>
+                  <con1:location>
+                    <con2:xpathText>./emp:verificaCreditoResponse/credito/dom:aprovado</con2:xpathText>
+                  </con1:location>
+                  <con1:expr>
+                    <con2:xqueryText>"true"</con2:xqueryText>
+                  </con1:expr>
+                </con1:replace>
+              </con1:actions>
+            </con1:case>
+            <con1:default/>
+          </con1:ifThenElse>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
     <con:flow>
       <con:pipeline-node name="Verifica Credito">
         <con:request>Verifica Credito_request</con:request>
