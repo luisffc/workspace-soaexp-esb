@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:wsdl ref="SOALifeCycleESB/Interfaces/Contracts/ProcessaEmpresa"/>
+      <con:port>
+        <con:name>ProcessaEmpresaSOAP</con:name>
+        <con:namespace>http://www.soaexpert.com.br/ProcessaEmpresa/</con:namespace>
+      </con:port>
+      <con:selector type="SOAP body"/>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+    <ser:ws-policy>
+      <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+    </ser:ws-policy>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/SOALifeCycleESB/Services/Proxies/ProcessaEmpresa</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>true</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+      <http:request-encoding>UTF-8</http:request-encoding>
+      <http:response-encoding>UTF-8</http:response-encoding>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con:pipeline type="request" name="Orquestra Empresa_request">
+      <con:stage name="Verifica Cadastro">
+        <con:context>
+          <con1:varNsDecl namespace="http://www.soaexpert.com.br/ProcessaEmpresa/" prefix="proc"/>
+          <con1:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con2:wsCallout>
+            <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7be9</con1:id>
+            <con2:service xsi:type="ref:ProxyRef" ref="SOALifeCycleESB/Services/Proxies/EmpresaFacade" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con2:operation>verificaCadastro</con2:operation>
+            <con2:request>
+              <con2:body>$verificaCadastroRequest</con2:body>
+            </con2:request>
+            <con2:response>
+              <con2:body>verificaCadastroResponse</con2:body>
+            </con2:response>
+            <con2:requestTransform>
+              <con2:assign varName="verificaCadastroRequest">
+                <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7bc2</con1:id>
+                <con2:expr>
+                  <con1:xqueryText><![CDATA[<emp:verificaCadastro xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/proc:processa/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/proc:processa/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/proc:processa/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/proc:processa/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/proc:processa/empresa/dom:telefone/text()}</dom:telefone>
+    </empresa>
+</emp:verificaCadastro>]]></con1:xqueryText>
+                </con2:expr>
+              </con2:assign>
+            </con2:requestTransform>
+            <con2:responseTransform/>
+          </con2:wsCallout>
+          <con2:ifThenElse>
+            <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7ba5</con1:id>
+            <con2:case>
+              <con2:condition>
+                <con1:xqueryText>$verificaCadastroResponse/status/text() != "true"</con1:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:wsCallout>
+                  <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7b6b</con1:id>
+                  <con2:service xsi:type="ref:ProxyRef" ref="SOALifeCycleESB/Services/Proxies/EmpresaFacade" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                  <con2:operation>cadastra</con2:operation>
+                  <con2:request>
+                    <con2:body>$cadastraRequest</con2:body>
+                  </con2:request>
+                  <con2:response>
+                    <con2:body>cadastraResponse</con2:body>
+                  </con2:response>
+                  <con2:requestTransform>
+                    <con2:assign varName="cadastraRequest">
+                      <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7b4a</con1:id>
+                      <con2:expr>
+                        <con1:xqueryText><![CDATA[<emp:cadastra xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/proc:processa/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/proc:processa/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/proc:processa/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/proc:processa/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/proc:processa/empresa/dom:telefone/text()}</dom:telefone>
+    </empresa>
+</emp:cadastra>]]></con1:xqueryText>
+                      </con2:expr>
+                    </con2:assign>
+                  </con2:requestTransform>
+                  <con2:responseTransform/>
+                </con2:wsCallout>
+              </con2:actions>
+            </con2:case>
+            <con2:default/>
+          </con2:ifThenElse>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Verifica Credito">
+        <con:context>
+          <con1:varNsDecl namespace="http://www.soaexpert.com.br/ProcessaEmpresa/" prefix="proc"/>
+          <con1:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con2:wsCallout>
+            <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7af1</con1:id>
+            <con2:service xsi:type="ref:ProxyRef" ref="SOALifeCycleESB/Services/Proxies/EmpresaFacade" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con2:operation>verificaCredito</con2:operation>
+            <con2:request>
+              <con2:body>$verificaCreditoRequest</con2:body>
+            </con2:request>
+            <con2:response>
+              <con2:body>verificaCreditoResponse</con2:body>
+            </con2:response>
+            <con2:requestTransform>
+              <con2:assign varName="verificaCreditoRequest">
+                <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7ac3</con1:id>
+                <con2:expr>
+                  <con1:xqueryText><![CDATA[<emp:verificaCredito xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/proc:processa/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/proc:processa/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/proc:processa/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/proc:processa/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/proc:processa/empresa/dom:telefone/text()}</dom:telefone>
+    </empresa>
+</emp:verificaCredito>]]></con1:xqueryText>
+                </con2:expr>
+              </con2:assign>
+            </con2:requestTransform>
+            <con2:responseTransform/>
+          </con2:wsCallout>
+          <con2:assign varName="aprovado">
+            <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7a55</con1:id>
+            <con2:expr>
+              <con1:xqueryText>$verificaCreditoResponse/dom:credito/dom:aprovado/text()</con1:xqueryText>
+            </con2:expr>
+          </con2:assign>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Aprova ou Rejeita">
+        <con:context>
+          <con1:varNsDecl namespace="http://www.soaexpert.com.br/ProcessaEmpresa/" prefix="proc"/>
+          <con1:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con2:ifThenElse>
+            <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7a3c</con1:id>
+            <con2:case>
+              <con2:condition>
+                <con1:xqueryText>$aprovado = "true"</con1:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:assign varName="aprovaEmpresa">
+                  <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-79e9</con1:id>
+                  <con2:expr>
+                    <con1:xqueryText><![CDATA[<emp:aprovaEmpresa xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/proc:processa/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/proc:processa/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/proc:processa/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/proc:processa/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/proc:processa/empresa/dom:telefone/text()}</dom:telefone>
+    </empresa>
+</emp:aprovaEmpresa>]]></con1:xqueryText>
+                  </con2:expr>
+                </con2:assign>
+                <con2:replace varName="body">
+                  <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-79cf</con1:id>
+                  <con2:location>
+                    <con1:xpathText>./*</con1:xpathText>
+                  </con2:location>
+                  <con2:expr>
+                    <con1:xqueryText>$aprovaEmpresa</con1:xqueryText>
+                  </con2:expr>
+                </con2:replace>
+                <con3:route>
+                  <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7976</con1:id>
+                  <con3:service ref="SOALifeCycleESB/Services/Proxies/EmpresaFacade" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                  <con3:operation>aprovaEmpresa</con3:operation>
+                  <con3:outboundTransform/>
+                </con3:route>
+              </con2:actions>
+            </con2:case>
+            <con2:default>
+              <con2:assign varName="rejeitaEmpresa">
+                <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7935</con1:id>
+                <con2:expr>
+                  <con1:xqueryText><![CDATA[<emp:rejeita xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/proc:processa/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/proc:processa/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/proc:processa/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/proc:processa/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/proc:processa/empresa/dom:telefone/text()}</dom:telefone>
+    </empresa>
+</emp:rejeita>]]></con1:xqueryText>
+                </con2:expr>
+              </con2:assign>
+              <con2:replace varName="body">
+                <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7915</con1:id>
+                <con2:location>
+                  <con1:xpathText>./*</con1:xpathText>
+                </con2:location>
+                <con2:expr>
+                  <con1:xqueryText>$rejeitaEmpresa</con1:xqueryText>
+                </con2:expr>
+              </con2:replace>
+              <con3:route>
+                <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-78f4</con1:id>
+                <con3:service ref="SOALifeCycleESB/Services/Proxies/EmpresaFacade" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                <con3:operation>rejeita</con3:operation>
+                <con3:outboundTransform/>
+              </con3:route>
+            </con2:default>
+          </con2:ifThenElse>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="response" name="Orquestra Empresa_response"/>
+    <con:flow>
+      <con:pipeline-node name="Orquestra Empresa">
+        <con:request>Orquestra Empresa_request</con:request>
+        <con:response>Orquestra Empresa_response</con:response>
+      </con:pipeline-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>
