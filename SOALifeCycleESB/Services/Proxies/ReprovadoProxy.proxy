@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:wsdl ref="SOALifeCycleESB/Interfaces/Contracts/EmpresaService"/>
+      <con:port>
+        <con:name>EmpresaServiceSOAP</con:name>
+        <con:namespace>http://www.soaexpert.com.br/EmpresaService/</con:namespace>
+      </con:port>
+      <con:selector type="SOAP body"/>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+    <ser:ws-policy>
+      <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+    </ser:ws-policy>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/SOALifeCycleESB/Services/Proxies/ReprovadoProxy</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>true</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+      <http:request-encoding>UTF-8</http:request-encoding>
+      <http:response-encoding>UTF-8</http:response-encoding>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con:flow>
+      <con:route-node name="Fila Reprovacao">
+        <con:context/>
+        <con:actions>
+          <con1:route>
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7e7a</con2:id>
+            <con1:service ref="SOALifeCycleESB/Services/Business/ReprovadoBusiness" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con1:outboundTransform/>
+            <con1:responseTransform/>
+          </con1:route>
+        </con:actions>
+      </con:route-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>
