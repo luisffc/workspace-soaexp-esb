@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:wsdl ref="SOALifeCycleESB/Interfaces/Contracts/EmpresaService"/>
+      <con:port>
+        <con:name>EmpresaServiceSOAP</con:name>
+        <con:namespace>http://www.soaexpert.com.br/EmpresaService/</con:namespace>
+      </con:port>
+      <con:selector type="SOAP body"/>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+    <ser:ws-policy>
+      <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+    </ser:ws-policy>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/SOALifeCycleESB/Services/Proxies/EmpresaFacade</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>true</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+      <http:request-encoding>UTF-8</http:request-encoding>
+      <http:response-encoding>UTF-8</http:response-encoding>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con:pipeline type="request" name="Verifica Credito_request">
+      <con:stage name="Variaveis" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con1:assign varName="empresa">
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c7f</con2:id>
+            <con1:expr>
+              <con2:xqueryText><![CDATA[<empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/emp:verificaCredito/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/emp:verificaCredito/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/emp:verificaCredito/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/emp:verificaCredito/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/emp:verificaCredito/empresa/dom:telefone/text()}</dom:telefone>
+</empresa>]]></con2:xqueryText>
+            </con1:expr>
+          </con1:assign>
+          <con1:assign varName="credito">
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c7e</con2:id>
+            <con1:expr>
+              <con2:xqueryText>xs:int(0)</con2:xqueryText>
+            </con1:expr>
+          </con1:assign>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Verifica Serasa" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con1:wsCallout>
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c7c</con2:id>
+            <con1:service xsi:type="ref:BusinessServiceRef" ref="SOALifeCycleESB/Services/Business/CreditoService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con1:operation>vefiricaCreditoSerasa</con1:operation>
+            <con1:request>
+              <con1:body>$serasaRequest</con1:body>
+            </con1:request>
+            <con1:response>
+              <con1:body>serasaResponse</con1:body>
+            </con1:response>
+            <con1:requestTransform>
+              <con1:assign varName="serasaRequest">
+                <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c7d</con2:id>
+                <con1:expr>
+                  <con2:xqueryText>&lt;cred:vefiricaCreditoSerasa xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
+    {$empresa}
+&lt;/cred:vefiricaCreditoSerasa></con2:xqueryText>
+                </con1:expr>
+              </con1:assign>
+            </con1:requestTransform>
+            <con1:responseTransform/>
+          </con1:wsCallout>
+          <con1:ifThenElse>
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c7b</con2:id>
+            <con1:case>
+              <con1:condition>
+                <con2:xqueryText>$serasaResponse/credito/dom:serasa/text() = "true"</con2:xqueryText>
+              </con1:condition>
+              <con1:actions>
+                <con1:assign varName="credito">
+                  <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c7a</con2:id>
+                  <con1:expr>
+                    <con2:xqueryText>fn:sum(xs:int($credito) + 1)</con2:xqueryText>
+                  </con1:expr>
+                </con1:assign>
+              </con1:actions>
+            </con1:case>
+            <con1:default/>
+          </con1:ifThenElse>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Verifica SPC" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con1:wsCallout>
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c78</con2:id>
+            <con1:service xsi:type="ref:BusinessServiceRef" ref="SOALifeCycleESB/Services/Business/CreditoService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con1:operation>verificaCreditoSPC</con1:operation>
+            <con1:request>
+              <con1:body>$spcRequest</con1:body>
+            </con1:request>
+            <con1:response>
+              <con1:body>spcResponse</con1:body>
+            </con1:response>
+            <con1:requestTransform>
+              <con1:assign varName="spcRequest">
+                <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c79</con2:id>
+                <con1:expr>
+                  <con2:xqueryText>&lt;cred:verificaCreditoSPC xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
+    {$empresa}
+&lt;/cred:verificaCreditoSPC></con2:xqueryText>
+                </con1:expr>
+              </con1:assign>
+            </con1:requestTransform>
+            <con1:responseTransform/>
+          </con1:wsCallout>
+          <con1:ifThenElse>
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c77</con2:id>
+            <con1:case>
+              <con1:condition>
+                <con2:xqueryText>$spcResponse/credito/dom:spc/text() = "true"</con2:xqueryText>
+              </con1:condition>
+              <con1:actions>
+                <con1:assign varName="credito">
+                  <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c76</con2:id>
+                  <con1:expr>
+                    <con2:xqueryText>fn:sum(xs:int($credito) + 1)</con2:xqueryText>
+                  </con1:expr>
+                </con1:assign>
+              </con1:actions>
+            </con1:case>
+            <con1:default/>
+          </con1:ifThenElse>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Verifica Casas Bahia" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con1:wsCallout>
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c74</con2:id>
+            <con1:service xsi:type="ref:BusinessServiceRef" ref="SOALifeCycleESB/Services/Business/CreditoService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con1:operation>verificaCasasBahia</con1:operation>
+            <con1:request>
+              <con1:body wrapped="false">$bahiaRequest</con1:body>
+            </con1:request>
+            <con1:response>
+              <con1:body wrapped="false">bahiaResponse</con1:body>
+            </con1:response>
+            <con1:requestTransform>
+              <con1:assign varName="bahiaRequest">
+                <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c75</con2:id>
+                <con1:expr>
+                  <con2:xqueryText>&lt;cred:verificaCasasBahia xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
+    {$empresa}
+&lt;/cred:verificaCasasBahia></con2:xqueryText>
+                </con1:expr>
+              </con1:assign>
+            </con1:requestTransform>
+            <con1:responseTransform/>
+          </con1:wsCallout>
+          <con1:ifThenElse>
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c73</con2:id>
+            <con1:case>
+              <con1:condition>
+                <con2:xqueryText>$bahiaResponse/credito/dom:casasBahia/text() = "true"</con2:xqueryText>
+              </con1:condition>
+              <con1:actions>
+                <con1:assign varName="credito">
+                  <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c72</con2:id>
+                  <con1:expr>
+                    <con2:xqueryText>fn:sum(xs:int($credito) + 1)</con2:xqueryText>
+                  </con1:expr>
+                </con1:assign>
+              </con1:actions>
+            </con1:case>
+            <con1:default/>
+          </con1:ifThenElse>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="response" name="Verifica Credito_response">
+      <con:stage name="Define Retorno" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:context/>
+        <con:actions>
+          <con1:assign varName="response">
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c71</con2:id>
+            <con1:expr>
+              <con2:xqueryText><![CDATA[<emp:verificaCreditoResponse xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
+	<dom:credito xmlns:dom="http://www.soaexpert.com.br/domain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.soaexpert.com.br/domain ../../Interfaces/Schemas/DomainModel.xsd ">
+	  {$empresa}
+	  <dom:serasa>{$serasaResponse/credito/dom:serasa/text()}</dom:serasa>
+	  <dom:spc>{$spcResponse/credito/dom:spc/text()}</dom:spc>
+	  <dom:casasBahia>{$bahiaResponse/credito/dom:casasBahia/text()}</dom:casasBahia>
+	  <dom:aprovado>false</dom:aprovado>
+	</dom:credito>
+</emp:verificaCreditoResponse>]]></con2:xqueryText>
+            </con1:expr>
+          </con1:assign>
+          <con1:replace varName="body">
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c70</con2:id>
+            <con1:location>
+              <con2:xpathText>./*</con2:xpathText>
+            </con1:location>
+            <con1:expr>
+              <con2:xqueryText>$response</con2:xqueryText>
+            </con1:expr>
+          </con1:replace>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Verifica se Aprovado" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con1:ifThenElse>
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c6f</con2:id>
+            <con1:case>
+              <con1:condition>
+                <con2:xqueryText>xs:int($credito) > 2</con2:xqueryText>
+              </con1:condition>
+              <con1:actions>
+                <con1:replace varName="body" contents-only="true">
+                  <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c6e</con2:id>
+                  <con1:location>
+                    <con2:xpathText>.//dom:aprovado</con2:xpathText>
+                  </con1:location>
+                  <con1:expr>
+                    <con2:xqueryText>"true"</con2:xqueryText>
+                  </con1:expr>
+                </con1:replace>
+              </con1:actions>
+            </con1:case>
+            <con1:default/>
+          </con1:ifThenElse>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="request" name="Verifica Cadastro_request">
+      <con:stage name="Verifica" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+        <con:context>
+          <con1:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con1:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
+        <con:actions>
+          <con2:wsCallout>
+            <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7bfa</con1:id>
+            <con2:service xsi:type="ref:BusinessServiceRef" ref="SOALifeCycleESB/Services/Business/EmpresaBusiness" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con2:operation>verificaCadastro</con2:operation>
+            <con2:request>
+              <con2:body>$cadastroRequest</con2:body>
+            </con2:request>
+            <con2:response>
+              <con2:body>cadastroResponse</con2:body>
+            </con2:response>
+            <con2:requestTransform>
+              <con2:assign varName="cadastroRequest">
+                <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7bfb</con1:id>
+                <con2:expr>
+                  <con1:xqueryText><![CDATA[<emp:verificaCadastro xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
+    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/emp:verificaCadastro/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/emp:verificaCadastro/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/emp:verificaCadastro/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/emp:verificaCadastro/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/emp:verificaCadastro/empresa/dom:telefone/text()}</dom:telefone>
+    </empresa>
+</emp:verificaCadastro>]]></con1:xqueryText>
+                </con2:expr>
+              </con2:assign>
+            </con2:requestTransform>
+            <con2:responseTransform/>
+          </con2:wsCallout>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="response" name="Verifica Cadastro_response">
+      <con:stage name="Resposta" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+        <con:context/>
+        <con:actions>
+          <con2:replace varName="body" contents-only="true">
+            <con1:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7bf9</con1:id>
+            <con2:location>
+              <con1:xpathText>.</con1:xpathText>
+            </con2:location>
+            <con2:expr>
+              <con1:xqueryText>$cadastroResponse</con1:xqueryText>
+            </con2:expr>
+          </con2:replace>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:flow>
+      <con:branch-node type="operation" name="BranchNode1">
+        <con:context/>
+        <con:branch-table>
+          <con:branch name="cadastra">
+            <con:operator>equals</con:operator>
+            <con:value/>
+            <con:flow>
+              <con:route-node name="Cadastra">
+                <con:context xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
+                <con:actions xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                  <con1:route>
+                    <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7d10</con2:id>
+                    <con1:service ref="SOALifeCycleESB/Services/Business/EmpresaBusiness" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                    <con1:operation>cadastra</con1:operation>
+                    <con1:outboundTransform/>
+                    <con1:responseTransform/>
+                  </con1:route>
+                </con:actions>
+              </con:route-node>
+            </con:flow>
+          </con:branch>
+          <con:branch name="rejeita">
+            <con:operator>equals</con:operator>
+            <con:value/>
+            <con:flow>
+              <con:route-node name="Fila Reprovacao">
+                <con:context xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
+                <con:actions xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                  <con1:route>
+                    <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7d7f</con2:id>
+                    <con1:service ref="SOALifeCycleESB/Services/Business/ReprovadoBusiness" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                    <con1:outboundTransform/>
+                    <con1:responseTransform/>
+                  </con1:route>
+                </con:actions>
+              </con:route-node>
+            </con:flow>
+          </con:branch>
+          <con:branch name="aprovaEmpresa">
+            <con:operator>equals</con:operator>
+            <con:value/>
+            <con:flow>
+              <con:route-node name="Fila Aprovacao">
+                <con:context xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
+                <con:actions xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                  <con1:route>
+                    <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7dee</con2:id>
+                    <con1:service ref="SOALifeCycleESB/Services/Business/AprovadoBusiness" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                    <con1:outboundTransform/>
+                    <con1:responseTransform/>
+                  </con1:route>
+                </con:actions>
+              </con:route-node>
+            </con:flow>
+          </con:branch>
+          <con:branch name="verificaCredito">
+            <con:operator>equals</con:operator>
+            <con:value/>
+            <con:flow>
+              <con:pipeline-node name="Verifica Credito">
+                <con:request>Verifica Credito_request</con:request>
+                <con:response>Verifica Credito_response</con:response>
+              </con:pipeline-node>
+            </con:flow>
+          </con:branch>
+          <con:branch name="verificaCadastro">
+            <con:operator>equals</con:operator>
+            <con:value/>
+            <con:flow>
+              <con:pipeline-node name="Verifica Cadastro">
+                <con:request>Verifica Cadastro_request</con:request>
+                <con:response>Verifica Cadastro_response</con:response>
+              </con:pipeline-node>
+            </con:flow>
+          </con:branch>
+          <con:default-branch>
+            <con:flow/>
+          </con:default-branch>
+        </con:branch-table>
+      </con:branch-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>
