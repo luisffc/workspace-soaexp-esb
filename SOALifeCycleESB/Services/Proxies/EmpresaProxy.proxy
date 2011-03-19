@@ -44,8 +44,23 @@
   <ser:router>
     <con:pipeline type="request" name="Verifica Credito_request">
       <con:stage name="Variaveis">
-        <con:context/>
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
+        </con:context>
         <con:actions>
+          <con1:assign varName="empresa">
+            <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7f98</con2:id>
+            <con1:expr>
+              <con2:xqueryText><![CDATA[<empresa xmlns:dom="http://www.soaexpert.com.br/domain">
+        <dom:id>{$body/emp:verificaCredito/empresa/dom:id/text()}</dom:id>
+        <dom:razaosocial>{$body/emp:verificaCredito/empresa/dom:razaosocial/text()}</dom:razaosocial>
+        <dom:nomeFantasia>{$body/emp:verificaCredito/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
+        <dom:cnpj>{$body/emp:verificaCredito/empresa/dom:cnpj/text()}</dom:cnpj>
+        <dom:telefone>{$body/emp:verificaCredito/empresa/dom:telefone/text()}</dom:telefone>
+</empresa>]]></con2:xqueryText>
+            </con1:expr>
+          </con1:assign>
           <con1:assign varName="credito">
             <con2:id>_ActionId-625907143929046240--51608c84.12ec0064bdc.-7fe6</con2:id>
             <con1:expr>
@@ -74,15 +89,9 @@
               <con1:assign varName="serasaRequest">
                 <con2:id>_ActionId-625907143929046240--51608c84.12ec0064bdc.-7fbd</con2:id>
                 <con1:expr>
-                  <con2:xqueryText><![CDATA[<cred:vefiricaCreditoSerasa xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
-    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
-        <dom:id>{$body/emp:verificaCadastro/empresa/dom:id/text()}</dom:id>
-        <dom:razaosocial>{$body/emp:verificaCadastro/empresa/dom:razaosocial/text()}</dom:razaosocial>
-        <dom:nomeFantasia>{$body/emp:verificaCadastro/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
-        <dom:cnpj>{$body/emp:verificaCadastro/empresa/dom:cnpj/text()}</dom:cnpj>
-        <dom:telefone>{$body/emp:verificaCadastro/empresa/dom:telefone/text()}</dom:telefone>
-    </empresa>
-</cred:vefiricaCreditoSerasa>]]></con2:xqueryText>
+                  <con2:xqueryText>&lt;cred:vefiricaCreditoSerasa xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
+    {$empresa}
+&lt;/cred:vefiricaCreditoSerasa></con2:xqueryText>
                 </con1:expr>
               </con1:assign>
             </con1:requestTransform>
@@ -127,15 +136,9 @@
               <con1:assign varName="spcRequest">
                 <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7f39</con2:id>
                 <con1:expr>
-                  <con2:xqueryText><![CDATA[<cred:verificaCreditoSPC xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
-    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
-        <dom:id>{$body/emp:verificaCadastro/empresa/dom:id/text()}</dom:id>
-        <dom:razaosocial>{$body/emp:verificaCadastro/empresa/dom:razaosocial/text()}</dom:razaosocial>
-        <dom:nomeFantasia>{$body/emp:verificaCadastro/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
-        <dom:cnpj>{$body/emp:verificaCadastro/empresa/dom:cnpj/text()}</dom:cnpj>
-        <dom:telefone>{$body/emp:verificaCadastro/empresa/dom:telefone/text()}</dom:telefone>
-    </empresa>
-</cred:verificaCreditoSPC>]]></con2:xqueryText>
+                  <con2:xqueryText>&lt;cred:verificaCreditoSPC xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
+    {$empresa}
+&lt;/cred:verificaCreditoSPC></con2:xqueryText>
                 </con1:expr>
               </con1:assign>
             </con1:requestTransform>
@@ -171,24 +174,18 @@
             <con1:service xsi:type="ref:BusinessServiceRef" ref="SOALifeCycleESB/Services/Business/CreditoService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
             <con1:operation>verificaCasasBahia</con1:operation>
             <con1:request>
-              <con1:body>$bahiaRequest</con1:body>
+              <con1:body wrapped="false">$bahiaRequest</con1:body>
             </con1:request>
             <con1:response>
-              <con1:body>bahiaResponse</con1:body>
+              <con1:body wrapped="false">bahiaResponse</con1:body>
             </con1:response>
             <con1:requestTransform>
               <con1:assign varName="bahiaRequest">
                 <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7e8a</con2:id>
                 <con1:expr>
-                  <con2:xqueryText><![CDATA[<cred:verificaCasasBahia xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
-    <empresa xmlns:dom="http://www.soaexpert.com.br/domain">
-        <dom:id>{$body/emp:verificaCadastro/empresa/dom:id/text()}</dom:id>
-        <dom:razaosocial>{$body/emp:verificaCadastro/empresa/dom:razaosocial/text()}</dom:razaosocial>
-        <dom:nomeFantasia>{$body/emp:verificaCadastro/empresa/dom:nomeFantasia/text()}</dom:nomeFantasia>
-        <dom:cnpj>{$body/emp:verificaCadastro/empresa/dom:cnpj/text()}</dom:cnpj>
-        <dom:telefone>{$body/emp:verificaCadastro/empresa/dom:telefone/text()}</dom:telefone>
-    </empresa>
-</cred:verificaCasasBahia>]]></con2:xqueryText>
+                  <con2:xqueryText>&lt;cred:verificaCasasBahia xmlns:cred="http://www.soaexpert.com.br/CreditoService/">
+    {$empresa}
+&lt;/cred:verificaCasasBahia></con2:xqueryText>
                 </con1:expr>
               </con1:assign>
             </con1:requestTransform>
@@ -223,16 +220,10 @@
             <con1:expr>
               <con2:xqueryText><![CDATA[<emp:verificaCreditoResponse xmlns:emp="http://www.soaexpert.com.br/EmpresaService/">
 	<dom:credito xmlns:dom="http://www.soaexpert.com.br/domain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.soaexpert.com.br/domain ../../Interfaces/Schemas/DomainModel.xsd ">
-	  <dom:empresa>
-	    <dom:id>0</dom:id>
-	    <dom:razaosocial>dom:razaosocial</dom:razaosocial>
-	    <dom:nomeFantasia>dom:nomeFantasia</dom:nomeFantasia>
-	    <dom:cnpj>dom:cnpj</dom:cnpj>
-	    <dom:telefone>0</dom:telefone>
-	  </dom:empresa>
-	  <dom:serasa>false</dom:serasa>
-	  <dom:spc>false</dom:spc>
-	  <dom:casasBahia>false</dom:casasBahia>
+	  {$empresa}
+	  <dom:serasa>{$serasaResponse/credito/dom:serasa/text()}</dom:serasa>
+	  <dom:spc>{$spcResponse/credito/dom:spc/text()}</dom:spc>
+	  <dom:casasBahia>{$bahiaResponse/credito/dom:casasBahia/text()}</dom:casasBahia>
 	  <dom:aprovado>false</dom:aprovado>
 	</dom:credito>
 </emp:verificaCreditoResponse>]]></con2:xqueryText>
@@ -262,10 +253,10 @@
                 <con2:xqueryText>xs:int($credito) > 2</con2:xqueryText>
               </con1:condition>
               <con1:actions>
-                <con1:replace varName="body" contents-only="false">
+                <con1:replace varName="body" contents-only="true">
                   <con2:id>_ActionId-6368779189774826876--61326aba.12ec8ddee47.-7d4b</con2:id>
                   <con1:location>
-                    <con2:xpathText>./emp:verificaCreditoResponse/credito/dom:aprovado</con2:xpathText>
+                    <con2:xpathText>.//dom:aprovado</con2:xpathText>
                   </con1:location>
                   <con1:expr>
                     <con2:xqueryText>"true"</con2:xqueryText>
