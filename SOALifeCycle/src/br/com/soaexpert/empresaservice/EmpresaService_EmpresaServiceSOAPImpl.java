@@ -3,6 +3,9 @@ package br.com.soaexpert.empresaservice;
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.Holder;
+
+import com.certicom.ecc.util.Random;
+
 import br.com.soaexpert.domain.Credito;
 import br.com.soaexpert.domain.Empresa;
 
@@ -24,8 +27,9 @@ public class EmpresaService_EmpresaServiceSOAPImpl implements EmpresaService {
 	 * @return returns boolean
 	 */
 	public boolean verificaCadastro(Empresa empresa) {
-		// replace with your impl here
-		return false;
+		boolean cadastrado = new Random().nextBoolean();
+		System.out.println("Empresa cadastrada? "+cadastrado);
+		return cadastrado;
 	}
 
 	/**
@@ -61,7 +65,7 @@ public class EmpresaService_EmpresaServiceSOAPImpl implements EmpresaService {
 	 * @param empresa
 	 */
 	public void cadastra(Holder<Empresa> empresa) {
-		// replace with your impl here
+		System.out.println("Cadastrou empresa");
 		return;
 	}
 
