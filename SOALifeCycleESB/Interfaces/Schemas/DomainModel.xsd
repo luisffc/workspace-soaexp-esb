@@ -31,11 +31,13 @@
     	</sequence>
     </complexType>
 
-    <complexType name="NewComplexType">
+    <complexType name="LoteEmpresa">
     	<sequence>
     		<element name="id" type="int"/>
     		<element name="empresas" type="tns:Empresa" minOccurs="1" maxOccurs="unbounded"/>
     	</sequence>
     </complexType>
     
+
+    <element name="loteEmpresa" type="tns:LoteEmpresa"/>
 </schema>
