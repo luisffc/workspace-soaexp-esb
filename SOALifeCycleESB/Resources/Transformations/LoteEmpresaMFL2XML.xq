@@ -11,7 +11,13 @@ declare function xf:LoteEmpresaMFL2XML($loteEmpresa1 as element())
             {
                 for $empresa in $loteEmpresa1/empresa
                 return
-                    <ns0:empresas/>
+                    <ns0:empresas>
+                        <ns0:id>{ xs:int($empresa/id) }</ns0:id>
+                        <ns0:razaosocial>{ data($empresa/razaosocial) }</ns0:razaosocial>
+                        <ns0:nomeFantasia>{ data($empresa/nomeFantasia) }</ns0:nomeFantasia>
+                        <ns0:cnpj>{ data($empresa/cnpj) }</ns0:cnpj>
+                        <ns0:telefone>{ xs:int($empresa/telefone) }</ns0:telefone>
+                    </ns0:empresas>
             }
         </ns0:loteEmpresa>
 };
