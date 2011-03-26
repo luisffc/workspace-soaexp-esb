@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:file="http://www.bea.com/wli/sb/transports/file" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:request type="MFL">
+        <con5:mfl ref="SOALifeCycleESB/Resources/LoteEmpresa" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config"/>
+      </con:request>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>file</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>file:////home/pc34/MFL</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <file:inbound-properties>
+        <file:fileMask>*.*</file:fileMask>
+        <file:pollingInterval>60</file:pollingInterval>
+        <file:sortByArrival>false</file:sortByArrival>
+        <file:postAction>Delete</file:postAction>
+        <file:readLimit>10</file:readLimit>
+        <file:passByReference>false</file:passByReference>
+        <file:scanSubDirectories>false</file:scanSubDirectories>
+        <file:stageDir>
+          <env:value>/home/pc34/MFL/stage</env:value>
+        </file:stageDir>
+        <file:errorDir>
+          <env:value>/home/pc34/MFL/error</env:value>
+        </file:errorDir>
+      </file:inbound-properties>
+      <file:request-encoding>utf-8</file:request-encoding>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con1:pipeline type="request" name="Processa ETL_request">
+      <con1:stage name="Carga Lote">
+        <con1:context/>
+        <con1:actions>
+          <con2:assign varName="loteEmpresaXML">
+            <con3:id>_ActionId-2010205905213618530--a4cb08f.12ef36c84a1.-7fda</con3:id>
+            <con2:expr>
+              <con3:xqueryTransform>
+                <con3:resource ref="SOALifeCycleESB/Resources/Transformations/LoteEmpresaMFL2XML"/>
+                <con3:param name="loteEmpresa1">
+                  <con3:path>$body/LoteEmpresa</con3:path>
+                </con3:param>
+              </con3:xqueryTransform>
+            </con2:expr>
+          </con2:assign>
+        </con1:actions>
+      </con1:stage>
+      <con1:stage name="Dispara Processamento">
+        <con1:context/>
+        <con1:actions>
+          <con2:foreach>
+            <con3:id>_ActionId-2010205905213618530--a4cb08f.12ef36c84a1.-7fba</con3:id>
+            <con2:variable>loteEmpresaXML</con2:variable>
+            <con2:expression>
+              <con3:xpathText>.//empresa</con3:xpathText>
+            </con2:expression>
+            <con2:value-variable>empresa</con2:value-variable>
+            <con2:index-variable>empresaIndex</con2:index-variable>
+            <con2:total-variable>empresaCount</con2:total-variable>
+            <con2:actions>
+              <con4:route>
+                <con3:id>_ActionId-2010205905213618530--a4cb08f.12ef36c84a1.-7f9a</con3:id>
+                <con4:service ref="SOALifeCycleESB/Services/Proxies/ProcessaEmpresa" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                <con4:operation>processa</con4:operation>
+                <con4:outboundTransform>
+                  <con2:assign varName="parametro">
+                    <con3:id>_ActionId-2010205905213618530--a4cb08f.12ef36c84a1.-7f44</con3:id>
+                    <con2:expr>
+                      <con3:xqueryText>&lt;proc:processa xmlns:proc="http://www.soaexpert.com.br/ProcessaEmpresa/">
+{$empresa}
+&lt;/proc:processa></con3:xqueryText>
+                    </con2:expr>
+                  </con2:assign>
+                </con4:outboundTransform>
+              </con4:route>
+            </con2:actions>
+          </con2:foreach>
+        </con1:actions>
+      </con1:stage>
+    </con1:pipeline>
+    <con1:pipeline type="response" name="Processa ETL_response"/>
+    <con1:flow>
+      <con1:pipeline-node name="Processa ETL">
+        <con1:request>Processa ETL_request</con1:request>
+        <con1:response>Processa ETL_response</con1:response>
+      </con1:pipeline-node>
+    </con1:flow>
+  </ser:router>
+</xml-fragment>
