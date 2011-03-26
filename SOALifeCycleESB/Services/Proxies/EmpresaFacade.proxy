@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
   <ser:coreEntry isProxy="true" isEnabled="true">
     <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
       <con:wsdl ref="SOALifeCycleESB/Interfaces/Contracts/EmpresaService"/>
@@ -43,7 +43,7 @@
   </ser:endpointConfig>
   <ser:router>
     <con:pipeline type="request" name="Verifica Credito_request">
-      <con:stage name="Variaveis" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+      <con:stage name="Variaveis" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
         <con:context>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
@@ -69,7 +69,7 @@
           </con1:assign>
         </con:actions>
       </con:stage>
-      <con:stage name="Verifica Serasa" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+      <con:stage name="Verifica Serasa" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
         <con:context>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
@@ -116,7 +116,7 @@
           </con1:ifThenElse>
         </con:actions>
       </con:stage>
-      <con:stage name="Verifica SPC" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+      <con:stage name="Verifica SPC" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
         <con:context>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
@@ -163,7 +163,7 @@
           </con1:ifThenElse>
         </con:actions>
       </con:stage>
-      <con:stage name="Verifica Casas Bahia" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+      <con:stage name="Verifica Casas Bahia" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
         <con:context>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
@@ -212,7 +212,7 @@
       </con:stage>
     </con:pipeline>
     <con:pipeline type="response" name="Verifica Credito_response">
-      <con:stage name="Define Retorno" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+      <con:stage name="Define Retorno" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
         <con:context/>
         <con:actions>
           <con1:assign varName="response">
@@ -240,7 +240,7 @@
           </con1:replace>
         </con:actions>
       </con:stage>
-      <con:stage name="Verifica se Aprovado" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+      <con:stage name="Verifica se Aprovado" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
         <con:context>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
@@ -323,6 +323,41 @@
         </con:actions>
       </con:stage>
     </con:pipeline>
+    <con:pipeline type="request" name="Reporting_request">
+      <con:stage name="Criacao Relatorio">
+        <con:context/>
+        <con:actions>
+          <con1:report>
+            <con2:id>_ActionId-2010205905213618530--a4cb08f.12ef36c84a1.-7d13</con2:id>
+            <con1:expr>
+              <con2:xqueryText>fn-bea:serialize($body)</con2:xqueryText>
+            </con1:expr>
+            <con1:labels>
+              <con1:key>idEmpresa</con1:key>
+              <con1:varName>body</con1:varName>
+              <con1:value>
+                <con2:xpathText>.//id</con2:xpathText>
+              </con1:value>
+            </con1:labels>
+          </con1:report>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="response" name="Reporting_response"/>
+    <con:pipeline type="request" name="Reporting Rejeita_request">
+      <con:stage name="Criacao Relatorio">
+        <con:context/>
+        <con:actions>
+          <con1:report>
+            <con2:id>_ActionId-2010205905213618530--a4cb08f.12ef36c84a1.-7ccd</con2:id>
+            <con1:expr>
+              <con2:xqueryText>fn-bea:serialize($body)</con2:xqueryText>
+            </con1:expr>
+          </con1:report>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="response" name="Reporting Rejeita_response"/>
     <con:flow>
       <con:branch-node type="operation" name="BranchNode1">
         <con:context/>
@@ -332,8 +367,8 @@
             <con:value/>
             <con:flow>
               <con:route-node name="Cadastra">
-                <con:context xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
-                <con:actions xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                <con:context xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
+                <con:actions xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
                   <con1:route>
                     <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7d10</con2:id>
                     <con1:service ref="SOALifeCycleESB/Services/Business/EmpresaBusiness" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
@@ -349,13 +384,31 @@
             <con:operator>equals</con:operator>
             <con:value/>
             <con:flow>
+              <con:pipeline-node name="Reporting Rejeita">
+                <con:request>Reporting Rejeita_request</con:request>
+                <con:response>Reporting Rejeita_response</con:response>
+              </con:pipeline-node>
               <con:route-node name="Fila Reprovacao">
-                <con:context xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
-                <con:actions xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                <con:context xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
+                <con:actions xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
                   <con1:route>
                     <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7d7f</con2:id>
                     <con1:service ref="SOALifeCycleESB/Services/Business/ReprovadoBusiness" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
-                    <con1:outboundTransform/>
+                    <con1:outboundTransform>
+                      <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id>_ActionId-2010205905213618530--a4cb08f.12ef36c84a1.-7cac</con2:id>
+                        <con3:expr>
+                          <con2:xqueryText>'Antes da chamada Rejeita'</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                          <con3:key>QueueReprova</con3:key>
+                          <con3:varName>body</con3:varName>
+                          <con3:value>
+                            <con2:xpathText>.//nomeFantasia</con2:xpathText>
+                          </con3:value>
+                        </con3:labels>
+                      </con3:report>
+                    </con1:outboundTransform>
                     <con1:responseTransform/>
                   </con1:route>
                 </con:actions>
@@ -366,13 +419,31 @@
             <con:operator>equals</con:operator>
             <con:value/>
             <con:flow>
+              <con:pipeline-node name="Reporting">
+                <con:request>Reporting_request</con:request>
+                <con:response>Reporting_response</con:response>
+              </con:pipeline-node>
               <con:route-node name="Fila Aprovacao">
-                <con:context xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
-                <con:actions xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                <con:context xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config"/>
+                <con:actions xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
                   <con1:route>
                     <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7dee</con2:id>
                     <con1:service ref="SOALifeCycleESB/Services/Business/AprovadoBusiness" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
-                    <con1:outboundTransform/>
+                    <con1:outboundTransform>
+                      <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id>_ActionId-2010205905213618530--a4cb08f.12ef36c84a1.-7cf4</con2:id>
+                        <con3:expr>
+                          <con2:xqueryText>'Antes da chamada aprova'</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                          <con3:key>QueueAprova</con3:key>
+                          <con3:varName>body</con3:varName>
+                          <con3:value>
+                            <con2:xpathText>.//nomeFantasia</con2:xpathText>
+                          </con3:value>
+                        </con3:labels>
+                      </con3:report>
+                    </con1:outboundTransform>
                     <con1:responseTransform/>
                   </con1:route>
                 </con:actions>
