@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:aler="http://www.bea.com/wli/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jms="http://www.bea.com/wli/sb/transports/jms">
+  <aler:description>Erros do fluxo de processamento da empresa</aler:description>
+  <aler:AlertToConsole>true</aler:AlertToConsole>
+  <aler:AlertToReportingDataSet>true</aler:AlertToReportingDataSet>
+  <aler:AlertToSNMP>true</aler:AlertToSNMP>
+  <aler:Destinations type="jms">
+    <aler:config xsi:type="jms:JmsActionProviderConfiguration" xmlns:jms="http://www.bea.com/wli/monitoring/alert/action/jms">
+      <jms:transport-end-point-config>
+        <jms:config xsi:type="tran:EndPointConfiguration" xmlns:tran="http://www.bea.com/wli/sb/transports">
+          <tran:provider-id>jms</tran:provider-id>
+          <tran:inbound>false</tran:inbound>
+          <tran:URI>
+            <env:value>jms://localhost:7001/SOAExpertCF/EmpresaErroQueue</env:value>
+          </tran:URI>
+          <tran:provider-specific>
+            <jms1:is-queue xmlns:jms1="http://www.bea.com/wli/sb/transports/jms">true</jms1:is-queue>
+            <jms1:is-secure xmlns:jms1="http://www.bea.com/wli/sb/transports/jms">false</jms1:is-secure>
+            <jms1:outbound-properties xmlns:jms1="http://www.bea.com/wli/sb/transports/jms">
+              <jms1:message-type>Text</jms1:message-type>
+              <jms1:enable-message-persistence>false</jms1:enable-message-persistence>
+              <jms1:pass-caller-subject>false</jms1:pass-caller-subject>
+            </jms1:outbound-properties>
+            <jms1:request-encoding xmlns:jms1="http://www.bea.com/wli/sb/transports/jms">UTF-8</jms1:request-encoding>
+            <jms1:jndi-timeout xmlns:jms1="http://www.bea.com/wli/sb/transports/jms">0</jms1:jndi-timeout>
+          </tran:provider-specific>
+        </jms:config>
+      </jms:transport-end-point-config>
+    </aler:config>
+  </aler:Destinations>
+</xml-fragment>

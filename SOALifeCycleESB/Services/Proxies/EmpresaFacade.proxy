@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config">
   <ser:coreEntry isProxy="true" isEnabled="true">
     <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
       <con:wsdl ref="SOALifeCycleESB/Interfaces/Contracts/EmpresaService"/>
@@ -67,14 +67,25 @@
               <con2:xqueryText>xs:int(0)</con2:xqueryText>
             </con1:expr>
           </con1:assign>
+          <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+            <con2:id>_ActionId-1947937247233505055--2af87f49.12f1660b45d.-7fb2</con2:id>
+            <con3:expr>
+              <con2:xqueryText>fn-bea:serialize($body)</con2:xqueryText>
+            </con3:expr>
+          </con3:report>
         </con:actions>
       </con:stage>
-      <con:stage name="Verifica Serasa" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+      <con:stage name="Verifica Serasa" errorHandler="_onErrorHandler-8129807832599094503-45e533ca.12f168a5bc2.-7fff" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
         <con:context>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/EmpresaService/" prefix="emp"/>
           <con2:varNsDecl namespace="http://www.soaexpert.com.br/domain" prefix="dom"/>
         </con:context>
         <con:actions>
+          <con1:Error>
+            <con2:id>_ActionId-8129807832599094503-45e533ca.12f168a5bc2.-7f69</con2:id>
+            <con1:errCode>01</con1:errCode>
+            <con1:message>Error verifica Serasa</con1:message>
+          </con1:Error>
           <con1:wsCallout>
             <con2:id>_ActionId-4407173574385689136-3714bf0.12ece2c4cad.-7c7c</con2:id>
             <con1:service xsi:type="ref:BusinessServiceRef" ref="SOALifeCycleESB/Services/Business/CreditoService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
@@ -114,6 +125,19 @@
             </con1:case>
             <con1:default/>
           </con1:ifThenElse>
+          <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+            <con2:id>_ActionId-1947937247233505055--2af87f49.12f1660b45d.-7f69</con2:id>
+            <con3:expr>
+              <con2:xqueryText>'Verifica Serasa'</con2:xqueryText>
+            </con3:expr>
+            <con3:labels>
+              <con3:key>CreditoSerasa</con3:key>
+              <con3:varName>serasaResponse</con3:varName>
+              <con3:value>
+                <con2:xpathText>.//serasa/text()</con2:xpathText>
+              </con3:value>
+            </con3:labels>
+          </con3:report>
         </con:actions>
       </con:stage>
       <con:stage name="Verifica SPC" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
@@ -161,6 +185,19 @@
             </con1:case>
             <con1:default/>
           </con1:ifThenElse>
+          <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+            <con2:id>_ActionId-1947937247233505055--2af87f49.12f1660b45d.-7f53</con2:id>
+            <con3:expr>
+              <con2:xqueryText>'Verifica SPC'</con2:xqueryText>
+            </con3:expr>
+            <con3:labels>
+              <con3:key>SpcSerasa</con3:key>
+              <con3:varName>spcResponse</con3:varName>
+              <con3:value>
+                <con2:xpathText>.//spc/text()</con2:xpathText>
+              </con3:value>
+            </con3:labels>
+          </con3:report>
         </con:actions>
       </con:stage>
       <con:stage name="Verifica Casas Bahia" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
@@ -208,6 +245,19 @@
             </con1:case>
             <con1:default/>
           </con1:ifThenElse>
+          <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+            <con2:id>_ActionId-1947937247233505055--2af87f49.12f1660b45d.-7f3c</con2:id>
+            <con3:expr>
+              <con2:xqueryText>'Verifica Casas Bahia'</con2:xqueryText>
+            </con3:expr>
+            <con3:labels>
+              <con3:key>CasasBahia</con3:key>
+              <con3:varName>bahiaResponse</con3:varName>
+              <con3:value>
+                <con2:xpathText>.//casasBahia/text()</con2:xpathText>
+              </con3:value>
+            </con3:labels>
+          </con3:report>
         </con:actions>
       </con:stage>
     </con:pipeline>
@@ -365,6 +415,30 @@
       </con:stage>
     </con:pipeline>
     <con:pipeline type="response" name="Reporting Rejeita_response"/>
+    <con:pipeline type="error" name="_onErrorHandler-8129807832599094503-45e533ca.12f168a5bc2.-7fff">
+      <con:stage name="Captura erro Serasa">
+        <con:context>
+          <con2:varNsDecl namespace="http://www.soaexpert.com.br/CreditoService/" prefix="cred"/>
+          <con4:variable name="serasaFalt" path="$serasaFalt" asChild="false">
+            <con4:wsdl ref="SOALifeCycleESB/Interfaces/Contracts/CreditoService" element="cred:vefiricaCreditoSerasaFault" xmlns:cred="http://www.soaexpert.com.br/CreditoService/"/>
+          </con4:variable>
+        </con:context>
+        <con:actions>
+          <con3:alert>
+            <con2:id>_ActionId-8129807832599094503-45e533ca.12f168a5bc2.-7fd3</con2:id>
+            <con3:destination ref="SOALifeCycleESB/Resources/EmpresaErrosDestination"/>
+            <con3:description>Erro ao consultar serasa</con3:description>
+            <con3:severity>major</con3:severity>
+            <con3:payload>
+              <con2:xqueryText>$serasaFalt/vefiricaCreditoSerasaFault</con2:xqueryText>
+            </con3:payload>
+          </con3:alert>
+          <con2:resume>
+            <con2:id>_ActionId-8129807832599094503-45e533ca.12f168a5bc2.-7f39</con2:id>
+          </con2:resume>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
     <con:flow>
       <con:branch-node type="operation" name="BranchNode1">
         <con:context/>

@@ -50,7 +50,34 @@
     			</xsd:sequence>
     		</xsd:complexType>
     	</xsd:element>
-    	
+
+    	<xsd:element name="vefiricaCreditoSerasaFault">
+    		<xsd:complexType>
+    			<xsd:sequence>
+    				<xsd:element name="vefiricaCreditoSerasaFault"
+    					type="xsd:string">
+    				</xsd:element>
+    			</xsd:sequence>
+    		</xsd:complexType>
+    	</xsd:element>
+    	<xsd:element name="verificaCreditoSPCFault">
+    		<xsd:complexType>
+    			<xsd:sequence>
+    				<xsd:element name="verificaCreditoSPCFault"
+    					type="xsd:string">
+    				</xsd:element>
+    			</xsd:sequence>
+    		</xsd:complexType>
+    	</xsd:element>
+    	<xsd:element name="verificaCasasBahiaFault">
+    		<xsd:complexType>
+    			<xsd:sequence>
+    				<xsd:element name="verificaCasasBahiaFault"
+    					type="xsd:string">
+    				</xsd:element>
+    			</xsd:sequence>
+    		</xsd:complexType>
+    	</xsd:element>
     </xsd:schema>
   </wsdl:types>
   
@@ -74,23 +101,35 @@
   <wsdl:message name="verificaCasasBahiaResponse">
   	<wsdl:part name="parameters" element="tns:verificaCasasBahiaResponse"/>
   </wsdl:message>
-  
+
+  <wsdl:message name="vefiricaCreditoSerasaFault">
+  	<wsdl:part name="parameters" element="tns:vefiricaCreditoSerasaFault"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="verificaCreditoSPCFault">
+  	<wsdl:part name="parameters" element="tns:verificaCreditoSPCFault"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="verificaCasasBahiaFault">
+  	<wsdl:part name="parameters" element="tns:verificaCasasBahiaFault"></wsdl:part>
+  </wsdl:message>
   <wsdl:portType name="CreditoService">
   
     <wsdl:operation name="vefiricaCreditoSerasa">
       <wsdl:input message="tns:vefiricaCreditoSerasaRequest"/>
       <wsdl:output message="tns:vefiricaCreditoSerasaResponse"/>
-    </wsdl:operation>
+            <wsdl:fault name="fault" message="tns:vefiricaCreditoSerasaFault"></wsdl:fault>
+        </wsdl:operation>
 
     <wsdl:operation name="verificaCreditoSPC">
     	<wsdl:input message="tns:verificaCreditoSPCRequest"/>
     	<wsdl:output message="tns:verificaCreditoSPCResponse"/>
-    </wsdl:operation>
+            <wsdl:fault name="fault" message="tns:verificaCreditoSPCFault"></wsdl:fault>
+        </wsdl:operation>
 
     <wsdl:operation name="verificaCasasBahia">
     	<wsdl:input message="tns:verificaCasasBahiaRequest"/>
     	<wsdl:output message="tns:verificaCasasBahiaResponse"/>
-    </wsdl:operation>
+            <wsdl:fault name="fault" message="tns:verificaCasasBahiaFault"></wsdl:fault>
+        </wsdl:operation>
     
   </wsdl:portType>
   
