@@ -353,6 +353,13 @@
             <con1:expr>
               <con2:xqueryText>fn-bea:serialize($body)</con2:xqueryText>
             </con1:expr>
+            <con1:labels>
+              <con1:key>idEmpresa</con1:key>
+              <con1:varName>body</con1:varName>
+              <con1:value>
+                <con2:xpathText>.//id</con2:xpathText>
+              </con1:value>
+            </con1:labels>
           </con1:report>
         </con:actions>
       </con:stage>
